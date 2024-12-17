@@ -1,6 +1,6 @@
 // js/main.js
 const csInterface = new CSInterface();
-let subtitles = [];
+const subtitles = [];
 let currentEditingIndex = -1;
 
 // Initialize Speech Recognition
@@ -11,16 +11,16 @@ recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
 // Error handling for speech recognition
-recognition.onerror = function(event) {
+recognition.onerror = (event) => {
     console.error('Speech recognition error:', event.error);
-    alert('Speech recognition error: ' + event.error);
+    alert(`Speech recognition error: ${event.error}`);
 };
 
 // Success handling for speech recognition
-recognition.onresult = function(event) {
+recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript;
     const confidence = event.results[event.results.length - 1][0].confidence;
-    
+
     if (confidence > 0.8) {
         addSubtitle({
             text: transcript,
@@ -32,23 +32,23 @@ recognition.onresult = function(event) {
 };
 
 // Initialize UI elements
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('transcribeBtn').addEventListener('click', startTranscription);
     document.getElementById('updateSubtitle').addEventListener('click', updateCurrentSubtitle);
-    
+
     // Initialize CSInterface event listeners
-    csInterface.addEventListener('com.adobe.csxs.events.playheadChanged', function(event) {
+    csInterface.addEventListener('com.adobe.csxs.events.playheadChanged', (event) => {
         updatePreview(event.data);
     });
 });
 
 function startTranscription() {
-    csInterface.evalScript('getSequenceAudio()', function(result) {
+    csInterface.evalScript('getSequenceAudio()', (result) => {
         if (result === 'false') {
             alert('No active sequence found. Please open a sequence first.');
             return;
         }
-        
+
         recognition.start();
         document.getElementById('transcribeBtn').textContent = 'Transcribing...';
         document.getElementById('transcribeBtn').disabled = true;
@@ -64,7 +64,7 @@ function addSubtitle(subtitle) {
 function updateSubtitleList() {
     const subtitleList = document.getElementById('subtitleList');
     subtitleList.innerHTML = '';
-    
+
     subtitles.forEach((subtitle, index) => {
         const subtitleElement = document.createElement('div');
         subtitleElement.className = 'subtitle-item';
@@ -82,10 +82,10 @@ function editSubtitle(index) {
 
 function updateCurrentSubtitle() {
     if (currentEditingIndex === -1) return;
-    
+
     const newText = document.getElementById('currentSubtitle').value;
     subtitles[currentEditingIndex].text = newText;
-    
+
     csInterface.evalScript(`updateSubtitle(${currentEditingIndex}, "${newText}")`);
     updateSubtitleList();
 }
@@ -98,7 +98,7 @@ function formatTime(seconds) {
 function getCurrentPlayheadTime() {
     return new Promise((resolve) => {
         csInterface.evalScript('getCurrentTime()', (time) => {
-            resolve(parseFloat(time));
+            resolve(Number.parseFloat(time));
         });
     });
 }
