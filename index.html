@@ -1,0 +1,25 @@
+// index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Arabic STT Subtitler</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="content">
+        <h1>Arabic Speech-to-Text Subtitler</h1>
+        <button id="transcribeBtn">Transcribe Current Sequence</button>
+        <div id="subtitleEditor">
+            <div id="videoPreview"></div>
+            <div id="subtitleList"></div>
+            <div id="editPanel">
+                <textarea id="currentSubtitle" placeholder="Select a subtitle to edit"></textarea>
+                <button id="updateSubtitle">Update Subtitle</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/libs/CSInterface.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
